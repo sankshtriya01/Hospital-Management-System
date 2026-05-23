@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} Slot{% endblock %}
+{% block content %}
+<div style="max-width:480px;margin:0 auto;">
+    <a href="{% url 'doctor_dashboard' %}" style="color:#6b7280;font-size:13px;text-decoration:none;">← Back to dashboard</a>
+    <div class="card" style="margin-top:20px;">
+        <h1>{{ action }} Availability Slot</h1>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <p style="color:#dc2626;font-size:12px;margin-top:4px;">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <div style="display:flex;gap:10px;margin-top:8px;">
+                <button type="submit" class="btn btn-primary">{{ action }} Slot</button>
+                <a href="{% url 'doctor_dashboard' %}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

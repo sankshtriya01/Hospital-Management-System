@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Patient Dashboard{% endblock %}
+{% block content %}
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+    <div>
+        <h1 style="margin-bottom:4px;">Welcome, {{ user.get_full_name }}</h1>
+        <p style="color:#6b7280;font-size:14px;">View your upcoming appointments or book a new one.</p>
+    </div>
+    <a href="{% url 'doctor_list' %}" class="btn btn-primary">Find a Doctor</a>
+</div>
+
+{% if not user.google_access_token %}
+<div class="alert alert-info">
+    📅 <strong>Connect Google Calendar</strong> to get appointments added to your calendar automatically.
+    <a href="{% url 'google_authorize' %}" style="margin-left:8px;font-weight:600;">Connect now →</a>
+</div>
+{% endif %}
+
+<div class="card">
+    <h2>Your Appointments</h2>
+    {% if my_bookings %}
+    <table>
+        <thead>
+            <tr>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Calendar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in my_bookings %}
+            <tr>
+                <td>Dr. {{ booking.slot.doctor.get_full_name }}</td>
+                <td>{{ booking.slot.date }}</td>
+                <td>{{ booking.slot.start_time|time:"H:i" }} – {{ booking.slot.end_time|time:"H:i" }}</td>
+                <td><span class="badge badge-green">{{ booking.status|title }}</span></td>
+                <td>
+                    {% if booking.patient_calendar_event_id %}
+                        <span style="font-size:12px;color:#16a34a;">✅ Added</span>
+                    {% elif user.google_access_token %}
+                        <span style="font-size:12px;color:#9ca3af;">–</span>
+                    {% else %}
+                        <span style="font-size:12px;color:#9ca3af;">Not connected</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>You have no upcoming appointments.</p>
+        <a href="{% url 'doctor_list' %}" class="btn btn-primary">Book one now</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+service: hms-email-service
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+  # Environment variables — set these for real SMTP sending.
+  # Leave SMTP_USER/SMTP_PASSWORD empty to run in dev/log-only mode.
+  environment:
+    SMTP_HOST: ${env:SMTP_HOST, 'smtp.gmail.com'}
+    SMTP_PORT: ${env:SMTP_PORT, '587'}
+    SMTP_USER: ${env:SMTP_USER, ''}
+    SMTP_PASSWORD: ${env:SMTP_PASSWORD, ''}
+    FROM_NAME: ${env:FROM_NAME, 'HMS Hospital'}
+
+functions:
+  sendEmail:
+    handler: handler.send_email
+    events:
+      - http:
+          path: /send-email
+          method: post
+          cors: true
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3000
+    host: localhost
+    noPrependStageInUrl: false

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+<div style="max-width:480px;margin:80px auto;text-align:center;">
+    <div class="card">
+        <h1 style="margin-bottom:8px;">Create Account</h1>
+        <p style="color:#6b7280;margin-bottom:32px;">Choose your role to get started.</p>
+        <div style="display:flex;gap:16px;flex-direction:column;">
+            <a href="{% url 'doctor_signup' %}" class="btn btn-primary" style="padding:16px;font-size:16px;text-align:center;">
+                🩺 Sign up as a <strong>Doctor</strong>
+            </a>
+            <a href="{% url 'patient_signup' %}" class="btn btn-success" style="padding:16px;font-size:16px;text-align:center;">
+                🧑‍⚕️ Sign up as a <strong>Patient</strong>
+            </a>
+        </div>
+        <p style="margin-top:24px;font-size:13px;color:#6b7280;">
+            Already have an account? <a href="{% url 'login' %}" style="color:#2563eb;">Log in</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

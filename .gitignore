@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.venv/
+*.egg-info/
+
+# Django
+*.sqlite3
+/hms/static/
+/hms/media/
+
+# Environment — NEVER commit this
+.env
+*.env
+
+# Node / Serverless
+node_modules/
+.serverless/
+email-service/node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+.pycharm/
+
+

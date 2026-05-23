@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Book with Dr. {{ doctor.get_full_name }}{% endblock %}
+{% block content %}
+<a href="{% url 'doctor_list' %}" style="color:#6b7280;font-size:13px;text-decoration:none;">← Back to doctors</a>
+
+<div style="margin:20px 0 24px;">
+    <h1>Dr. {{ doctor.get_full_name }}</h1>
+    {% if doctor.doctor_profile.specialization %}
+        <p style="color:#6b7280;">{{ doctor.doctor_profile.specialization }}</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Available Slots</h2>
+    {% if slots %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for slot in slots %}
+            <tr>
+                <td>{{ slot.date }}</td>
+                <td>{{ slot.start_time }}</td>
+                <td>{{ slot.end_time }}</td>
+                <td>
+                    <form method="post" action="{% url 'book_slot' slot.pk %}"
+                          onsubmit="return confirm('Confirm this booking?')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success" style="padding:6px 16px;font-size:13px;">
+                            Book
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>Dr. {{ doctor.get_full_name }} has no available slots right now.</p>
+        <a href="{% url 'doctor_list' %}" class="btn btn-outline">Browse other doctors</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

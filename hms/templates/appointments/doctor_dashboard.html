@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Doctor Dashboard{% endblock %}
+{% block content %}
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+    <div>
+        <h1 style="margin-bottom:4px;">Dr. {{ user.get_full_name }}</h1>
+        <p style="color:#6b7280;font-size:14px;">
+            {% if user.doctor_profile.specialization %}{{ user.doctor_profile.specialization }} · {% endif %}
+            Manage your availability slots below.
+        </p>
+    </div>
+    <a href="{% url 'add_slot' %}" class="btn btn-primary">+ Add Slot</a>
+</div>
+
+{% if not user.google_access_token %}
+<div class="alert alert-info">
+    📅 <strong>Connect Google Calendar</strong> to automatically add appointments to your calendar when patients book.
+    <a href="{% url 'google_authorize' %}" style="margin-left:8px;font-weight:600;">Connect now →</a>
+</div>
+{% endif %}
+
+<div class="card">
+    <h2>Your Availability Slots</h2>
+    {% if slots %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for slot in slots %}
+            <tr>
+                <td>{{ slot.date }}</td>
+                <td>{{ slot.start_time|time:"H:i" }}</td>
+                <td>{{ slot.end_time|time:"H:i" }}</td>
+                <td>
+                    {% if slot.is_booked %}
+                        <span class="badge badge-red">Booked</span>
+                    {% elif not slot.is_future %}
+                        <span class="badge" style="background:#f3f4f6;color:#6b7280;">Past</span>
+                    {% else %}
+                        <span class="badge badge-green">Available</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not slot.is_booked %}
+                        <a href="{% url 'edit_slot' slot.pk %}" class="btn btn-outline" style="padding:4px 12px;font-size:12px;">Edit</a>
+                        <form method="post" action="{% url 'delete_slot' slot.pk %}" style="display:inline;" onsubmit="return confirm('Delete this slot?')">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger" style="padding:4px 12px;font-size:12px;">Delete</button>
+                        </form>
+                    {% else %}
+                        {% if slot.booking %}
+                            <span style="font-size:12px;color:#6b7280;">
+                                {{ slot.booking.patient.get_full_name|default:slot.booking.patient.username }}
+                            </span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>You have no availability slots yet.</p>
+        <a href="{% url 'add_slot' %}" class="btn btn-primary">Add your first slot</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

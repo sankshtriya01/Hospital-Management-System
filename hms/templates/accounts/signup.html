@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Sign Up — {{ role }}{% endblock %}
+{% block content %}
+<div style="max-width:480px;margin:48px auto;">
+    <div class="card">
+        <h1>Sign up as a {{ role }}</h1>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <p style="color:#dc2626;font-size:12px;margin-top:4px;">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;font-size:15px;">
+                Create Account
+            </button>
+        </form>
+        <p style="margin-top:16px;font-size:13px;text-align:center;color:#6b7280;">
+            Already have an account? <a href="{% url 'login' %}" style="color:#2563eb;">Log in</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
