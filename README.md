@@ -18,7 +18,7 @@ A Django-based hospital management web app with doctor availability, patient app
 ### 1. Clone the repo
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/sankshtriya01/Hospital-Management-System.git
 cd hms-project
 ```
 
